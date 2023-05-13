@@ -3,7 +3,7 @@
 '''
 import csv
 import math
-from typing import List, Tuple
+from typing import List, Tuple, Dict
 
 
 class Server:
@@ -36,6 +36,39 @@ class Server:
             # out of bounds/range of dataset list
             return []
         return self.dataset()[start:end]
+
+    def get_hyper(self, page: int = 1, page_size: int = 10) -> Dict:
+        '''Returns a dictionary with data implementing HATEOAS.
+        '''
+        assert isinstance(page, int) and isinstance(page_size, int)
+        assert page > 0 and page_size > 0
+
+        total_dataset = len(self.dataset())
+        data = self.get_page(page, page_size)
+        page_size2 = len(data)
+        if page_size2 > 0 and total_dataset > (page * page_size):
+            next_page = page + 1
+        else:
+            next_page = None
+
+        if page <= 1:
+            prev_page = None
+        else:
+            prev_page = page - 1
+
+        if (total_dataset % page_size) != 0:
+            # decimal fraction quotient
+            total_pages = (total_dataset // page_size) + 1
+        else:
+            total_pages = total_dataset // page_size
+
+        return dict(
+                page_size=page_size2,
+                page=page,
+                data=data,
+                next_page=next_page,
+                prev_page=prev_page,
+                total_pages=total_pages)
 
 
 def index_range(page: int, page_size: int) -> Tuple[int, int]:
