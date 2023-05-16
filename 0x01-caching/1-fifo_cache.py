@@ -23,10 +23,21 @@ class FIFOCache(BaseCaching):
         cache_len = len(self.cache_data)
 
         if cache_len < self.MAX_ITEMS:
-            self.cache_data.update({key: item})
-            # create timestamp for the key;
-            # ...timestamps are keys as keys themselves are values of this dic
-            self.fifo_timestamp.update({datetime.utcnow(): key})
+            if key not in self.cache_data.keys():
+                self.cache_data.update({key: item})
+                # create timestamp for the key; timestamps...
+                # ...are keys, as keys themselves are values of this dic
+                self.fifo_timestamp.update({datetime.utcnow(): key})
+            else:
+                # key already exists; update
+                self.cache_data.update({key: item})
+                # replace timestamp of `key` specifically;
+                # ...not necessarily the earliest timestamp
+                for k, v in self.fifo_timestamp.items():
+                    if v == key:
+                        del self.fifo_timestamp[k]
+                        self.fifo_timestamp.update({datetime.utcnow(): key})
+                        break
         else:
             # replacement has to occur if key does not yet exist
             sorted_keys = sorted(self.cache_data.keys())
