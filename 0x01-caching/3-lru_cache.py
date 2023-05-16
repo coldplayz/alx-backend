@@ -24,11 +24,23 @@ class LRUCache(BaseCaching):
         cache_len = len(self.cache_data)
 
         if cache_len < self.MAX_ITEMS:
-            self.cache_data.update({key: item})
-            # create/update count for the key;
-            # integer key for recency dict; `key` as values
-            self.count += 1
-            self.lru_recency.update({self.count: key})
+            if key not in self.cache_data.keys():
+                self.cache_data.update({key: item})
+                # create/update count for the key;
+                # integer key for recency dict; `key` as values
+                self.count += 1
+                self.lru_recency.update({self.count: key})
+            else:
+                # key exists already; update
+                self.cache_data.update({key: item})
+                # replace recency of `key` specifically;
+                # ...not necessarily the earliest recency
+                for k, v in self.lru_recency.items():
+                    if v == key:
+                        del self.lru_recency[k]
+                        self.count += 1
+                        self.lru_recency.update({self.count: key})
+                        break
         else:
             # replacement, or update, has to occur
             sorted_keys = sorted(self.cache_data.keys())
