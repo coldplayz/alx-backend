@@ -25,9 +25,7 @@ class LFUCache(BaseCaching):
         cache_len = len(self.cache_data)
 
         if cache_len < self.MAX_ITEMS:
-            # cache not full yet; insert or update
             if key not in self.cache_data.keys():
-                # insert
                 self.cache_data.update({key: item})
                 # track frequency
                 self.lfu_frequency.update({key: 1})
@@ -51,7 +49,7 @@ class LFUCache(BaseCaching):
                         self.lru_recency.update({self.count: key})
                         break
         else:
-            # cache full; replacement, or update, has to occur
+            # replacement, or update, has to occur
             sorted_keys = sorted(self.cache_data.keys())
             if key not in sorted_keys:
                 # replacement
@@ -64,8 +62,6 @@ class LFUCache(BaseCaching):
                     self.lfu_frequency.update({key: 1})
                 else:
                     # single least frequency
-                    self.cache_data.update({key: item})
-                    # update frequency
                     for k, v in self.lfu_frequency.items():
                         if v == lfu_frq:
                             pop_key = k
