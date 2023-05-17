@@ -77,4 +77,12 @@ class LRUCache(BaseCaching):
             # do nothing
             return
 
+        # get is a valid use; update recency
+        self.count += 1
+        for k, v in self.lru_recency.items():
+            if v == key:
+                del self.lru_recency[k]
+                self.lru_recency.update({self.count: key})
+                break
+
         return self.cache_data.get(key, None)
