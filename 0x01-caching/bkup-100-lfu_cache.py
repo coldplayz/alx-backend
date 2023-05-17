@@ -105,55 +105,18 @@ class LFUCache(BaseCaching):
             # do nothing
             return
 
-        pop_key = None
+        # new key to be inserted in both dicts
+        lru_key = min(self.lru_recency.keys())
+        # get the associated cache key
+        pop_key = self.lru_recency.get(lru_key)
+        # replace recencies, keeping the lru_recency dict trim to 4
+        del self.lru_recency[lru_key]
+        self.count += 1
+        self.lru_recency.update({self.count: key})
 
-        cache_len = len(self.cache_data)
-
-        if cache_len < self.MAX_ITEMS:
-            if key not in self.cache_data.keys():
-                self.cache_data.update({key: item})
-                # create/update count for the key;
-                # integer key for recency dict; `key` as values
-                self.count += 1
-                self.lru_recency.update({self.count: key})
-            else:
-                # key exists already; update
-                self.cache_data.update({key: item})
-                # replace recency of `key` specifically;
-                # ...not necessarily the earliest recency
-                for k, v in self.lru_recency.items():
-                    if v == key:
-                        del self.lru_recency[k]
-                        self.count += 1
-                        self.lru_recency.update({self.count: key})
-                        break
-        else:
-            # replacement, or update, has to occur
-            sorted_keys = sorted(self.cache_data.keys())
-            if key not in sorted_keys:
-                # new key to be inserted in both dicts
-                lru_key = min(self.lru_recency.keys())
-                # get the associated cache key
-                pop_key = self.lru_recency.get(lru_key)
-                # replace recencies, keeping the lru_recency dict trim to 4
-                del self.lru_recency[lru_key]
-                self.count += 1
-                self.lru_recency.update({self.count: key})
-
-                del self.cache_data[pop_key]
-                self.cache_data.update({key: item})
-                # print('########', pop_key)
-            else:
-                # key exists already; update
-                self.cache_data.update({key: item})
-                # replace recency of `key` specifically;
-                # ...not necessarily the earliest recency
-                for k, v in self.lru_recency.items():
-                    if v == key:
-                        del self.lru_recency[k]
-                        self.count += 1
-                        self.lru_recency.update({self.count: key})
-                        break
+        # update cache
+        del self.cache_data[pop_key]
+        self.cache_data.update({key: item})
 
         return pop_key
 
