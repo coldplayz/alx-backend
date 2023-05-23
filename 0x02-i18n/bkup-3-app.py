@@ -2,7 +2,7 @@
 """Basic Flask app.
 """
 from flask import Flask, render_template, request
-from flask_babel import Babel, gettext
+from flask_babel import Babel
 
 
 class Config:
@@ -33,8 +33,4 @@ def get_locale():
 def index():
     """Index page.
     """
-    # create message IDs, marked for translation
-    title = gettext('home_title')
-    header = gettext('home_header')
-
-    return render_template('3-index.html', title, header)
+    return render_template('3-index.html')
