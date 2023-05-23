@@ -18,15 +18,15 @@ config = Config()
 
 app = Flask(__name__)
 app.config.from_object(config)
-babel = Babel(app)
 
 
-# define a locale selector
-@babel.localeselector
 def get_locale():
     """Selects the most appropriate locale to use per request.
     """
     return request.accept_languages.best_match(app.config['LANGUAGES'])
+
+
+babel = Babel(app, locale_selector=get_locale)
 
 
 @app.route("/")
@@ -37,4 +37,4 @@ def index():
     title = gettext('home_title')
     header = gettext('home_header')
 
-    return render_template('3-index.html', title, header)
+    return render_template('3-index.html', title=title, header=header)
