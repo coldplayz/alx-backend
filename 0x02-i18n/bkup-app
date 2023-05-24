@@ -2,7 +2,7 @@
 """Basic Flask app.
 """
 from flask import Flask, render_template, request, g
-from flask_babel import Babel
+from flask_babel import Babel, format_datetime
 import pytz
 
 
@@ -121,4 +121,6 @@ def before_request():
 def index():
     """Index page.
     """
-    return render_template('7-index.html')
+    # automatically converts into [requesting] user's timezone
+    formatted_datetime = format_datetime()
+    return render_template('index.html', datetime_format=formatted_datetime)

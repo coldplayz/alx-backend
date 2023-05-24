@@ -19,7 +19,7 @@ config = Config()
 
 app = Flask(__name__)
 app.config.from_object(config)
-babel = Babel(app)
+# babel = Babel(app)
 
 users = {
     1: {"name": "Balou", "locale": "fr", "timezone": "Europe/Paris"},
@@ -30,8 +30,8 @@ users = {
 
 
 # define timezone selector
-@babel.timezoneselector
-def get_timezone():
+# @babel.timezoneselector
+def get_timezone() -> str:
     """Determine an appropriate timezone to use.
 
     In a request context, after before_request.
@@ -42,7 +42,7 @@ def get_timezone():
     timezone = request.args.get('timezone', None)
     if timezone:
         try:
-            return pytz.timezone(timezone)
+            return pytz.timezone(timezone).zone
         except pytz.exceptions.UnknownTimeZoneError:
             pass
 
@@ -52,15 +52,16 @@ def get_timezone():
         timezone = user.get('timezone')
         if timezone:
             try:
-                return pytz.timezone(timezone)
+                return pytz.timezone(timezone).zone
             except pytz.exceptions.UnknownTimeZoneError:
                 pass
 
-    # return None to fall back to config default
+    # fall back to config default
+    return app.config['BABEL_DEFAULT_TIMEZONE']
 
 
 # define a locale selector
-@babel.localeselector
+# @babel.localeselector
 def get_locale():
     """Selects the most appropriate locale to use per request.
 
@@ -84,13 +85,11 @@ def get_locale():
     return request.accept_languages.best_match(app.config['LANGUAGES'])
 
 
-'''
 babel = Babel(
         app,
         locale_selector=get_locale,
         timezone_selector=get_timezone,
         )
-'''
 
 
 def get_user():
