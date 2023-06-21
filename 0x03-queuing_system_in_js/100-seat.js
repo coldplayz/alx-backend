@@ -70,9 +70,9 @@ app.get('/reserve_seat', (req, res) => {
   }
 });
 
-app.get('/process', (req, res) => {
-  const processorQueue = kue.createQueue();
+const processorQueue = kue.createQueue();
 
+app.get('/process', (req, res) => {
   // return a response and continue processing
   res.json({ status: 'Queue processing' });
 

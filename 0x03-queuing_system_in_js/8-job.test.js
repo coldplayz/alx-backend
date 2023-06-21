@@ -8,10 +8,10 @@ const testQueue = kue.createQueue();
 describe('createPushNotificationsJobs', function () {
   // fixtures
   const testCases = [
-    { jobs: [{ one: 1, two: 2 }], type: 'notification', len: 1 },
-    { jobs: [{  three: 3, four: 4 }], type: 'notification', len: 1 },
-    { jobs: [{ five: 5, six: 6 }, { seven: 7, eigth: 8 }], type: 'notification', len: 2 },
-    { jobs: [], type: 'notification', len: 0 },
+    { jobs: [{ one: 1, two: 2 }], type: 'push_notification_code_3', len: 1 },
+    { jobs: [{  three: 3, four: 4 }], type: 'push_notification_code_3', len: 1 },
+    { jobs: [{ five: 5, six: 6 }, { seven: 7, eigth: 8 }], type: 'push_notification_code_3', len: 2 },
+    { jobs: [], type: 'push_notification_code_3', len: 0 },
   ];
 
   // hooks

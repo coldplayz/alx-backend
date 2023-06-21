@@ -7,8 +7,8 @@ export default function createPushNotificationsJobs(jobs, queue) {
   }
 
   jobs.forEach((jobData) => {
-    // create a job of type `notification`
-    const job = queue.create('notification', jobData);
+    // create a job of type `push_notification_code_3`
+    const job = queue.create('push_notification_code_3', jobData);
 
     // add job to redis, which uses pub/sub system
     job.save((err) => {
